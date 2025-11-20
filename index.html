@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Goodness Gracious Waitlist</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #FFFFFF;
+            color: #333333;
+            overflow-x: hidden;
+            touch-action: pan-y;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #F28500 0%, #FF9500 100%);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(242, 133, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .app-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        
+        .clear-btn {
+            background: #FF5252;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 46px;
+            z-index: 999;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #666666;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #F28500;
+            border-bottom: 3px solid #F28500;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10000;
+            transition: top 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .toast.show {
+            top: 60px;
+        }
+        
+        .toast.success {
+            background: #4CAF50;
+        }
+        
+        .toast.error {
+            background: #FF5252;
+        }
+        
+        /* Waitlist Tab */
+        .wait-banner {
+            background: linear-gradient(135deg, #FFB347 0%, #FFCC80 100%);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(242, 133, 0, 0.2);
+        }
+        
+        .wait-banner h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .wait-banner .wait-time {
+            font-size: 24px;
+            font-weight: 800;
+            color: #F28500;
+        }
+        
+        .search-box {
+            margin-bottom: 12px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .add-party-form {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 2px solid #FFB347;
+        }
+        
+        .form-row {
+            margin-bottom: 10px;
+        }
+        
+        .form-row label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .form-row-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .add-btn {
+            width: 100%;
+            background: #F28500;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(242, 133, 0, 0.3);
+        }
+        
+        .party-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .party-card.overdue {
+            border-color: #FF5252;
+            background: #FFF5F5;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 2px 6px rgba(255, 82, 82, 0.3); }
+            50% { box-shadow: 0 4px 12px rgba(255, 82, 82, 0.6); }
+        }
+        
+        @keyframes flashRed {
+            0%, 100% { background: #FFEBEE; border-color: #FF5252; }
+            50% { background: #FF5252; border-color: #D32F2F; }
+        }
+        
+        .party-card.overdue {
+            animation: flashRed 1s infinite;
+        }
+        
+        .overdue-label {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FF5252;
+            margin: 8px 0;
+            animation: flashText 1s infinite;
+        }
+        
+        @keyframes flashText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        .party-card.called-coming {
+            border-left: 5px solid #4CAF50;
+            background: #E8F5E9;
+            transition: background-color 1.5s ease-in-out;
+        }
+        
+        .party-card.called-unknown {
+            border-left: 5px solid #FFC107;
+            background: #FFF9C4;
+            transition: background-color 1.5s ease-in-out;
+        }
+        
+        .party-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .party-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .pill.size {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+        
+        .pill.pref {
+            background: #F3E5F5;
+            color: #7B1FA2;
+        }
+        
+        .pill.table {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+        
+        .pill.phone {
+            background: #E8F5E9;
+            color: #388E3C;
+        }
+        
+        .pill.server {
+            background: #FFE0B2;
+            color: #E65100;
+        }
+        
+        .timer {
+            font-size: 20px;
+            font-weight: 800;
+            margin: 8px 0;
+        }
+        
+        .timer.normal {
+            color: #4CAF50;
+        }
+        
+        .timer.overdue {
+            color: #FF5252;
+        }
+        
+        .call-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+        
+        .call-status.coming {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .call-status.unknown {
+            background: #FFC107;
+            color: #333;
+        }
+        
+        .party-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 9px 6px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .action-btn.call {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .action-btn.seat {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .action-btn.remove {
+            background: #FF5252;
+            color: white;
+        }
+        
+        .action-btn.edit {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .action-btn.remove-flash {
+            background: #FF5252;
+            color: white;
+            animation: flashRemove 1s infinite;
+        }
+        
+        @keyframes flashRemove {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .unknown-timer {
+            font-size: 12px;
+            font-weight: 700;
+            color: #FF9800;
+            margin-top: 4px;
+            padding: 4px 8px;
+            background: #FFF3E0;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        /* Servers Tab */
+        .server-form {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 2px solid #FFB347;
+        }
+        
+        .server-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .server-input-group input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .recommended-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        .recommended-box h3 {
+            font-size: 13px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        
+        .recommended-box .server-name {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        
+        .server-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        
+        .server-card.stopped {
+            opacity: 0.5;
+            background: #f5f5f5;
+        }
+        
+        .stop-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .stop-btn.active {
+            background: #4CAF50;
+        }
+        
+        .server-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .server-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        
+        .server-count {
+            font-size: 20px;
+            color: #F28500;
+            font-weight: 800;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .server-count:hover {
+            background: #FFE0B2;
+        }
+        
+        .seated-at-preview {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .seated-at-preview h3 {
+            font-size: 12px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        
+        .seated-at-preview .time {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        
+        .pill.seated-time {
+            background: #E8F5E9;
+            color: #2E7D32;
+            font-weight: 700;
+        }
+
+        .server-count {
+            font-size: 14px;
+            color: #666;
+            font-weight: 700;
+        }
+        
+        .seated-at-preview {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .seated-at-preview h3 {
+            font-size: 12px;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        
+        .seated-at-preview .time {
+            font-size: 20px;
+            font-weight: 800;
+        }
+        
+        .pill.seated-time {
+            background: #E8F5E9;
+            color: #2E7D32;
+            font-weight: 700;
+        }
+        
+        .server-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .counter-btn.inc {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .counter-btn.dec {
+            background: #FF9800;
+            color: white;
+        }
+        
+        .remove-server-btn {
+            background: #FF5252;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .total-served {
+            background: #FFB347;
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .total-served h3 {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .total-served .count {
+            font-size: 28px;
+            font-weight: 800;
+            color: #F28500;
+        }
+        
+        /* Review Tab */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card h4 {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: 800;
+            color: #F28500;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin: 16px 0 10px 0;
+        }
+        
+        .history-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .history-card.seated {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .history-card.removed {
+            border-left: 4px solid #FF5252;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .history-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .history-time {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .history-details {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .modal-btn.primary {
+            background: #F28500;
+            color: white;
+        }
+        
+        .modal-btn.success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .modal-btn.warning {
+            background: #FFC107;
+            color: #333;
+        }
+        
+        .modal-btn.cancel {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .server-workload-table {
+            margin-top: 16px;
+        }
+        
+        .workload-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .workload-card.attention {
+            border-color: #FFC107;
+            background: #FFFBF0;
+        }
+        
+        .workload-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .workload-count {
+            font-size: 18px;
+            font-weight: 800;
+            color: #F28500;
+        }
+        
+        .attention-flag {
+            background: #FFC107;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="app-title">🍊 Goodness Gracious</div>
+        <button class="clear-btn" onclick="confirmClearAll()">Clear All</button>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('waitlist')">Waitlist</button>
+        <button class="tab" onclick="switchTab('servers')">Servers</button>
+        <button class="tab" onclick="switchTab('review')">Review</button>
+    </div>
+    
+    <div id="toast" class="toast"></div>
+    
+    <!-- Waitlist Tab -->
+    <div id="waitlist" class="tab-content active">
+        <div class="wait-banner">
+            <h3>Est. Wait Time</h3>
+            <div class="wait-time" id="estimatedWait">0 min</div>
+        </div>
+        
+        <div class="add-party-form">
+            <div class="form-row">
+                <label>Guest Name *</label>
+                <input type="text" id="guestName" placeholder="Enter name" required>
+            </div>
+            <div class="form-row-split">
+                <div class="form-row">
+                    <label>Party Size *</label>
+                    <select id="partySize">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Wait (min) *</label>
+                    <select id="waitQuote">
+                        <option value="5">5 min</option>
+                        <option value="10">10 min</option>
+                        <option value="15" selected>15 min</option>
+                        <option value="20">20 min</option>
+                        <option value="25">25 min</option>
+                        <option value="30">30 min</option>
+                        <option value="35">35 min</option>
+                        <option value="40">40 min</option>
+                        <option value="45">45 min</option>
+                        <option value="50">50 min</option>
+                        <option value="55">55 min</option>
+                        <option value="60">1 hr</option>
+                        <option value="65">1 hr 5 min</option>
+                        <option value="70">1 hr 10 min</option>
+                        <option value="75">1 hr 15 min</option>
+                        <option value="80">1 hr 20 min</option>
+                        <option value="85">1 hr 25 min</option>
+                        <option value="90">1 hr 30 min</option>
+                        <option value="95">1 hr 35 min</option>
+                        <option value="100">1 hr 40 min</option>
+                        <option value="105">1 hr 45 min</option>
+                        <option value="110">1 hr 50 min</option>
+                        <option value="115">1 hr 55 min</option>
+                        <option value="120">2 hrs</option>
+                        <option value="125">2 hrs 5 min</option>
+                        <option value="130">2 hrs 10 min</option>
+                        <option value="135">2 hrs 15 min</option>
+                        <option value="140">2 hrs 20 min</option>
+                        <option value="145">2 hrs 25 min</option>
+                        <option value="150">2 hrs 30 min</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row-split">
+                <div class="form-row">
+                    <label>Preference</label>
+                    <select id="preference">
+                        <option value="First Available">First Available</option>
+                        <option value="Inside">Inside</option>
+                        <option value="Outside">Outside</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Table #</label>
+                    <select id="tableNum">
+                        <option value="">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                        <option value="33">33</option>
+                        <option value="34">34</option>
+                        <option value="35">35</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                        <option value="40">40</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Phone *</label>
+                <input type="tel" id="phoneNum" placeholder="(555) 555-5555" maxlength="14" required>
+            </div>
+            <button class="add-btn" onclick="addParty()">➕ Add to Waitlist</button>
+        </div>
+        
+        <div id="seatedAtPreview" style="display: none;"></div>
+        
+        <div class="search-box">
+            <input type="text" id="searchWaitlist" placeholder="🔍 Search by name or phone..." oninput="filterWaitlist()">
+        </div>
+        
+        <div id="waitlistContainer"></div>
+    </div>
+    
+    <!-- Servers Tab -->
+    <div id="servers" class="tab-content">
+        <div class="server-form">
+            <div class="server-input-group">
+                <input type="text" id="serverName" placeholder="Server name">
+                <button class="add-btn" onclick="addServer()">Add</button>
+            </div>
+        </div>
+        
+        <div id="recommendedServer" class="recommended-box">
+            <h3>Catch Up</h3>
+            <div class="server-name">--</div>
+        </div>
+        
+        <div id="serversList"></div>
+        
+        <div class="total-served">
+            <h3>Total Parties Served</h3>
+            <div class="count" id="totalServedCount">0</div>
+        </div>
+    </div>
+    
+    <!-- Review Tab -->
+    <div id="review" class="tab-content">
+        <div class="stats-summary">
+            <div class="stat-card">
+                <h4>Seated</h4>
+                <div class="number" id="seatedCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Removed</h4>
+                <div class="number" id="removedCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Guest Count</h4>
+                <div class="number" id="totalGuests">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>Avg Wait</h4>
+                <div class="number" id="avgWait">0m</div>
+            </div>
+        </div>
+        
+        <div class="section-title">Server Workload</div>
+        <div id="serverWorkload"></div>
+        
+        <div class="section-title">Seated Parties</div>
+        <div id="seatedList"></div>
+        
+        <div class="section-title">Removed Parties</div>
+        <div id="removedList"></div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="callModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Call Party</div>
+            <p style="margin-bottom: 16px; font-size: 14px; color: #666;">Update party status:</p>
+            <div class="modal-buttons">
+                <button class="modal-btn success" onclick="setCallStatus('coming')">Coming In</button>
+                <button class="modal-btn warning" onclick="setCallStatus('unknown')">Unknown</button>
+            </div>
+            <div class="modal-buttons" style="margin-top: 8px;">
+                <button class="modal-btn" style="background: #9E9E9E; color: white;" onclick="undoCallStatus()">Undo</button>
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Edit Party</div>
+            <div class="form-row">
+                <label>Guest Name</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="form-row-split">
+                <div class="form-row">
+                    <label>Party Size</label>
+                    <select id="editSize">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Wait (min)</label>
+                    <select id="editWait">
+                        <option value="5">5 min</option>
+                        <option value="10">10 min</option>
+                        <option value="15">15 min</option>
+                        <option value="20">20 min</option>
+                        <option value="25">25 min</option>
+                        <option value="30">30 min</option>
+                        <option value="35">35 min</option>
+                        <option value="40">40 min</option>
+                        <option value="45">45 min</option>
+                        <option value="50">50 min</option>
+                        <option value="55">55 min</option>
+                        <option value="60">1 hr</option>
+                        <option value="65">1 hr 5 min</option>
+                        <option value="70">1 hr 10 min</option>
+                        <option value="75">1 hr 15 min</option>
+                        <option value="80">1 hr 20 min</option>
+                        <option value="85">1 hr 25 min</option>
+                        <option value="90">1 hr 30 min</option>
+                        <option value="95">1 hr 35 min</option>
+                        <option value="100">1 hr 40 min</option>
+                        <option value="105">1 hr 45 min</option>
+                        <option value="110">1 hr 50 min</option>
+                        <option value="115">1 hr 55 min</option>
+                        <option value="120">2 hrs</option>
+                        <option value="125">2 hrs 5 min</option>
+                        <option value="130">2 hrs 10 min</option>
+                        <option value="135">2 hrs 15 min</option>
+                        <option value="140">2 hrs 20 min</option>
+                        <option value="145">2 hrs 25 min</option>
+                        <option value="150">2 hrs 30 min</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row-split">
+                <div class="form-row">
+                    <label>Preference</label>
+                    <select id="editPref">
+                        <option value="First Available">First Available</option>
+                        <option value="Inside">Inside</option>
+                        <option value="Outside">Outside</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label>Table #</label>
+                    <select id="editTable">
+                        <option value="">None</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="32">32</option>
+                        <option value="33">33</option>
+                        <option value="34">34</option>
+                        <option value="35">35</option>
+                        <option value="36">36</option>
+                        <option value="37">37</option>
+                        <option value="38">38</option>
+                        <option value="39">39</option>
+                        <option value="40">40</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>Phone</label>
+                <input type="tel" id="editPhone" maxlength="14">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn primary" onclick="saveEdit()">Save</button>
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Clear All Data?</div>
+            <p style="margin-bottom: 16px; font-size: 14px; color: #666;">This will permanently delete all waitlist, server, and history data.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" style="background: #FF5252; color: white;" onclick="clearAllData()">Clear All</button>
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            waitlist: [],
+            servers: [],
+            seated: [],
+            removed: []
+        };
+        
+        let currentPartyId = null;
+        let timerInterval = null;
+        let unknownTimers = {};
+        
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('goodnessGraciousState');
+            if (saved) {
+                state = JSON.parse(saved);
+            }
+            renderAll();
+            startTimerUpdate();
+            resumeUnknownTimers();
+        }
+        
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('goodnessGraciousState', JSON.stringify(state));
+        }
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            renderAll();
+        }
+        
+        // Update seated at preview
+        function updateSeatedAtPreview() {
+            const waitMinutes = parseInt(document.getElementById('waitQuote').value);
+            const seatedTime = new Date(Date.now() + waitMinutes * 60000);
+            const timeString = seatedTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            
+            const preview = document.getElementById('seatedAtPreview');
+            preview.innerHTML = `
+                <div class="seated-at-preview">
+                    <h3>Will be seated at</h3>
+                    <div class="time">${timeString}</div>
+                </div>
+            `;
+            preview.style.display = 'block';
+        }
+        
+        // Watch for changes to wait time
+        document.getElementById('waitQuote').addEventListener('change', updateSeatedAtPreview);
+        
+        // Phone number formatting
+        document.getElementById('phoneNum').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            
+            let formatted = '';
+            if (value.length > 0) {
+                formatted = '(' + value.substring(0, 3);
+                if (value.length >= 4) {
+                    formatted += ') ' + value.substring(3, 6);
+                }
+                if (value.length >= 7) {
+                    formatted += '-' + value.substring(6, 10);
+                }
+            }
+            e.target.value = formatted;
+        });
+        
+        document.getElementById('editPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            
+            let formatted = '';
+            if (value.length > 0) {
+                formatted = '(' + value.substring(0, 3);
+                if (value.length >= 4) {
+                    formatted += ') ' + value.substring(3, 6);
+                }
+                if (value.length >= 7) {
+                    formatted += '-' + value.substring(6, 10);
+                }
+            }
+            e.target.value = formatted;
+        });
+        
+        // Add party
+        function addParty() {
+            const name = document.getElementById('guestName').value.trim();
+            const size = parseInt(document.getElementById('partySize').value);
+            const wait = parseInt(document.getElementById('waitQuote').value);
+            const pref = document.getElementById('preference').value;
+            const table = document.getElementById('tableNum').value.trim();
+            const phone = document.getElementById('phoneNum').value.trim();
+            
+            if (!name) {
+                showToast('Please enter guest name', 'error');
+                return;
+            }
+            
+            if (!phone) {
+                showToast('Please enter phone number', 'error');
+                return;
+            }
+            
+            if (!size || size < 1) {
+                showToast('Please enter valid party size', 'error');
+                return;
+            }
+            
+            const seatedAt = new Date(Date.now() + wait * 60000);
+            
+            const party = {
+                id: Date.now(),
+                name,
+                size,
+                waitQuote: wait,
+                preference: pref,
+                table,
+                phone,
+                addedAt: Date.now(),
+                seatedAtTime: seatedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+                callStatus: null,
+                server: getRecommendedServer()
+            };
+            
+            state.waitlist.push(party);
+            saveState();
+            renderAll();
+            
+            // Clear form
+            document.getElementById('guestName').value = '';
+            document.getElementById('partySize').value = '2';
+            document.getElementById('waitQuote').value = '15';
+            document.getElementById('preference').value = 'First Available';
+            document.getElementById('tableNum').value = '';
+            document.getElementById('phoneNum').value = '';
+            
+            // Hide preview
+            document.getElementById('seatedAtPreview').style.display = 'none';
+            
+            showToast('Party added to waitlist');
+        }
+        
+        // Get recommended server
+        function getRecommendedServer() {
+            const activeServers = state.servers.filter(s => !s.stopped);
+            if (activeServers.length === 0) return '--';
+            
+            let minCount = Infinity;
+            let recommended = null;
+            
+            activeServers.forEach(server => {
+                if (server.count < minCount) {
+                    minCount = server.count;
+                    recommended = server;
+                }
+            });
+            
+            return recommended ? recommended.name : '--';
+        }
+        
+        // Direct count edit
+        function editServerCount(serverId) {
+            const server = state.servers.find(s => s.id === serverId);
+            if (!server || server.stopped) return;
+            
+            const newCount = prompt(`Enter guest count for ${server.name}:`, server.count);
+            if (newCount !== null) {
+                const parsed = parseInt(newCount);
+                if (!isNaN(parsed) && parsed >= 0) {
+                    server.count = parsed;
+                    saveState();
+                    renderAll();
+                    showToast(`${server.name} updated to ${parsed} guests`);
+                } else {
+                    showToast('Please enter a valid number', 'error');
+                }
+            }
+        }
+        
+        // Calculate estimated wait
+        function calculateEstimatedWait() {
+            const activeParties = state.waitlist.length;
+            const baseWait = 5;
+            return baseWait + (activeParties * 5);
+        }
+        
+        // Filter waitlist
+        function filterWaitlist() {
+            const search = document.getElementById('searchWaitlist').value.toLowerCase();
+            const filtered = state.waitlist.filter(p => 
+                p.name.toLowerCase().includes(search) || 
+                (p.phone && p.phone.includes(search))
+            );
+            renderWaitlist(filtered);
+        }
+        
+        // Render waitlist
+        function renderWaitlist(list = state.waitlist) {
+            const container = document.getElementById('waitlistContainer');
+            
+            if (list.length === 0) {
+                container.innerHTML = '<div class="no-data">No parties waiting</div>';
+                return;
+            }
+            
+            container.innerHTML = list.map(party => {
+                const elapsed = Math.floor((Date.now() - party.addedAt) / 1000);
+                const remainingSeconds = (party.waitQuote * 60) - elapsed;
+                const isOverdue = remainingSeconds < 0;
+                
+                let timerClass = isOverdue ? 'overdue' : 'normal';
+                let timerText = '';
+                if (isOverdue) {
+                    timerText = `<div class="overdue-label">TO BE SEATED!</div>`;
+                } else {
+                    const mins = Math.floor(remainingSeconds / 60);
+                    const secs = remainingSeconds % 60;
+                    timerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+                }
+                
+                let cardClass = 'party-card';
+                if (isOverdue) cardClass += ' overdue';
+                if (party.callStatus === 'coming') cardClass += ' called-coming';
+                if (party.callStatus === 'unknown') cardClass += ' called-unknown';
+                
+                let callStatusHTML = '';
+                if (party.callStatus === 'coming') {
+                    callStatusHTML = '<span class="call-status coming">COMING IN</span>';
+                } else if (party.callStatus === 'unknown') {
+                    if (party.unknownExpired) {
+                        callStatusHTML = '<span class="call-status unknown">UNKNOWN - READY TO REMOVE</span>';
+                    } else if (party.unknownStartTime) {
+                        const elapsed = Math.floor((Date.now() - party.unknownStartTime) / 60000);
+                        const remaining = 10 - elapsed;
+                        callStatusHTML = `<span class="call-status unknown">UNKNOWN</span><div class="unknown-timer">Remove in ${remaining}m</div>`;
+                    } else {
+                        callStatusHTML = '<span class="call-status unknown">UNKNOWN</span>';
+                    }
+                }
+                
+                return `
+                    <div class="${cardClass}">
+                        <div class="party-name">${party.name}</div>
+                        <div class="party-info">
+                            <span class="pill size">👥 ${party.size} ${party.size === 1 ? 'person' : 'people'}</span>
+                            <span class="pill pref">${party.preference}</span>
+                            ${party.table ? `<span class="pill table">Table ${party.table}</span>` : ''}
+                            ${party.phone ? `<span class="pill phone">📞 ${party.phone}</span>` : ''}
+                            ${party.server !== '--' ? `<span class="pill server">Recommended Server: ${party.server}</span>` : ''}
+                            <span class="pill seated-time">🕐 Seated at ${party.seatedAtTime}</span>
+                        </div>
+                        <div class="timer ${timerClass}">${timerText}</div>
+                        ${callStatusHTML}
+                        <div class="party-actions">
+                            <button class="action-btn call" onclick="openCallModal(${party.id})">${party.callStatus ? 'Called' : 'Call'}</button>
+                            <button class="action-btn seat" onclick="seatParty(${party.id})">Seat</button>
+                            <button class="action-btn ${party.unknownExpired ? 'remove-flash' : 'remove'}" onclick="removeParty(${party.id})">Remove</button>
+                            <button class="action-btn edit" onclick="openEditModal(${party.id})">Edit</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Timer update
+        function startTimerUpdate() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                renderWaitlist();
+            }, 1000); // Update every second for live countdown
+        }
+        
+        // Open call modal
+        function openCallModal(partyId) {
+            currentPartyId = partyId;
+            document.getElementById('callModal').classList.add('show');
+        }
+        
+        // Set call status
+        function setCallStatus(status) {
+            const party = state.waitlist.find(p => p.id === currentPartyId);
+            if (party) {
+                party.callStatus = status;
+                
+                // If status is unknown, start 10-minute timer
+                if (status === 'unknown') {
+                    party.unknownStartTime = Date.now();
+                    startUnknownTimer(party.id);
+                } else {
+                    // Clear unknown timer if switching to coming
+                    if (unknownTimers[party.id]) {
+                        clearInterval(unknownTimers[party.id]);
+                        delete unknownTimers[party.id];
+                    }
+                    delete party.unknownStartTime;
+                    delete party.unknownExpired;
+                }
+                
+                saveState();
+                renderAll();
+                showToast(status === 'coming' ? 'Status: Coming In' : 'Status: Unknown');
+            }
+            closeModal();
+        }
+        
+        // Start unknown timer
+        function startUnknownTimer(partyId) {
+            if (unknownTimers[partyId]) {
+                clearInterval(unknownTimers[partyId]);
+            }
+            
+            unknownTimers[partyId] = setInterval(() => {
+                const party = state.waitlist.find(p => p.id === partyId);
+                if (!party || party.callStatus !== 'unknown') {
+                    clearInterval(unknownTimers[partyId]);
+                    delete unknownTimers[partyId];
+                    return;
+                }
+                
+                const elapsed = Math.floor((Date.now() - party.unknownStartTime) / 60000);
+                if (elapsed >= 10) {
+                    party.unknownExpired = true;
+                    clearInterval(unknownTimers[partyId]);
+                    delete unknownTimers[partyId];
+                    saveState();
+                }
+                
+                renderWaitlist();
+            }, 5000); // Check every 5 seconds
+        }
+        
+        // Resume unknown timers on load
+        function resumeUnknownTimers() {
+            state.waitlist.forEach(party => {
+                if (party.callStatus === 'unknown' && party.unknownStartTime) {
+                    const elapsed = Math.floor((Date.now() - party.unknownStartTime) / 60000);
+                    if (elapsed >= 10) {
+                        party.unknownExpired = true;
+                        saveState();
+                    } else {
+                        startUnknownTimer(party.id);
+                    }
+                }
+            });
+        }
+        
+        // Undo call status
+        function undoCallStatus() {
+            const party = state.waitlist.find(p => p.id === currentPartyId);
+            if (party) {
+                party.callStatus = null;
+                
+                // Clear unknown timer
+                if (unknownTimers[party.id]) {
+                    clearInterval(unknownTimers[party.id]);
+                    delete unknownTimers[party.id];
+                }
+                delete party.unknownStartTime;
+                delete party.unknownExpired;
+                
+                saveState();
+                renderAll();
+                showToast('Call status cleared');
+            }
+            closeModal();
+        }
+        
+        // Seat party
+        function seatParty(partyId) {
+            const partyIndex = state.waitlist.findIndex(p => p.id === partyId);
+            if (partyIndex === -1) return;
+            
+            const party = state.waitlist[partyIndex];
+            const elapsed = Math.floor((Date.now() - party.addedAt) / 60000);
+            
+            state.seated.push({
+                ...party,
+                seatedAt: Date.now(),
+                actualWait: elapsed
+            });
+            
+            // Increment server count
+            const server = state.servers.find(s => s.name === party.server);
+            if (server) {
+                server.count++;
+            }
+            
+            state.waitlist.splice(partyIndex, 1);
+            saveState();
+            renderAll();
+            showToast(`${party.name} seated`);
+        }
+        
+        // Remove party
+        function removeParty(partyId) {
+            const partyIndex = state.waitlist.findIndex(p => p.id === partyId);
+            if (partyIndex === -1) return;
+            
+            const party = state.waitlist[partyIndex];
+            const elapsed = Math.floor((Date.now() - party.addedAt) / 60000);
+            
+            // Clear unknown timer if exists
+            if (unknownTimers[partyId]) {
+                clearInterval(unknownTimers[partyId]);
+                delete unknownTimers[partyId];
+            }
+            
+            state.removed.push({
+                ...party,
+                removedAt: Date.now(),
+                actualWait: elapsed
+            });
+            
+            state.waitlist.splice(partyIndex, 1);
+            saveState();
+            renderAll();
+            showToast(`${party.name} removed`);
+        }
+        
+        // Open edit modal
+        function openEditModal(partyId) {
+            currentPartyId = partyId;
+            const party = state.waitlist.find(p => p.id === partyId);
+            if (!party) return;
+            
+            document.getElementById('editName').value = party.name;
+            document.getElementById('editSize').value = party.size;
+            document.getElementById('editWait').value = party.waitQuote;
+            document.getElementById('editPref').value = party.preference;
+            document.getElementById('editTable').value = party.table;
+            document.getElementById('editPhone').value = party.phone;
+            
+            document.getElementById('editModal').classList.add('show');
+        }
+        
+        // Save edit
+        function saveEdit() {
+            const party = state.waitlist.find(p => p.id === currentPartyId);
+            if (!party) return;
+            
+            party.name = document.getElementById('editName').value.trim();
+            party.size = parseInt(document.getElementById('editSize').value);
+            party.waitQuote = parseInt(document.getElementById('editWait').value);
+            party.preference = document.getElementById('editPref').value;
+            party.table = document.getElementById('editTable').value.trim();
+            party.phone = document.getElementById('editPhone').value.trim();
+            party.server = getRecommendedServer();
+            
+            const newWait = parseInt(document.getElementById('editWait').value);
+            const newSeatedAt = new Date(Date.now() + newWait * 60000);
+            party.seatedAtTime = newSeatedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            
+            saveState();
+            renderAll();
+            showToast('Party updated');
+            closeModal();
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+            currentPartyId = null;
+        }
+        
+        // Add server
+        function addServer() {
+            const name = document.getElementById('serverName').value.trim();
+            if (!name) {
+                showToast('Please enter server name', 'error');
+                return;
+            }
+            
+            state.servers.push({            id: Date.now(),
+            name,
+            count: 0,
+            stopped: false
+        });
+            
+            document.getElementById('serverName').value = '';
+            saveState();
+            renderAll();
+            showToast('Server added');
+        }
+        
+        // Remove server
+        function removeServer(serverId) {
+            const index = state.servers.findIndex(s => s.id === serverId);
+            if (index !== -1) {
+                const serverName = state.servers[index].name;
+                state.servers.splice(index, 1);
+                saveState();
+                renderAll();
+                showToast(`${serverName} removed`);
+            }
+        }
+        
+        // Increment server count
+        function incrementServer(serverId) {
+            const server = state.servers.find(s => s.id === serverId);
+            if (server) {
+                server.count++;
+                saveState();
+                renderAll();
+            }
+        }
+        
+        // Decrement server count
+        function decrementServer(serverId) {
+            const server = state.servers.find(s => s.id === serverId);
+            if (server && server.count > 0) {
+                server.count--;
+                saveState();
+                renderAll();
+            }
+        }
+        
+        // Toggle server stopped status
+        function toggleServerStop(serverId) {
+            const server = state.servers.find(s => s.id === serverId);
+            if (server) {
+                server.stopped = !server.stopped;
+                saveState();
+                renderAll();
+                showToast(server.stopped ? `${server.name} stopped seating` : `${server.name} resumed seating`);
+            }
+        }
+        
+        // Render servers
+        function renderServers() {
+            const recommended = getRecommendedServer();
+            document.querySelector('#recommendedServer .server-name').textContent = recommended;
+            
+            const container = document.getElementById('serversList');
+            if (state.servers.length === 0) {
+                container.innerHTML = '<div class="no-data">No servers added</div>';
+                return;
+            }
+            
+            container.innerHTML = state.servers.map(server => `
+                <div class="server-card ${server.stopped ? 'stopped' : ''}">
+                    <div class="server-info">
+                        <h4>${server.name}</h4>
+                        <div class="server-count" onclick="editServerCount(${server.id})" title="Click to edit">
+                            ${server.stopped ? 'Stopped' : '<strong>' + server.count + '</strong> Guests Served'}
+                        </div>
+                    </div>
+                    <div class="server-controls">
+                        <button class="counter-btn dec" onclick="decrementServer(${server.id})" ${server.stopped ? 'disabled' : ''}>−</button>
+                        <button class="counter-btn inc" onclick="incrementServer(${server.id})" ${server.stopped ? 'disabled' : ''}>+</button>
+                        <button class="stop-btn ${server.stopped ? 'active' : ''}" onclick="toggleServerStop(${server.id})">${server.stopped ? 'Resume' : 'Stop'}</button>
+                        <button class="remove-server-btn" onclick="removeServer(${server.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            const total = state.servers.reduce((sum, s) => sum + s.count, 0);
+            document.getElementById('totalServedCount').textContent = total;
+        }
+        
+        // Render review
+        function renderReview() {
+            // Stats
+            document.getElementById('seatedCount').textContent = state.seated.length;
+            document.getElementById('removedCount').textContent = state.removed.length;
+            
+            const totalGuests = state.servers.reduce((sum, s) => sum + s.count, 0);
+            document.getElementById('totalGuests').textContent = totalGuests;
+            
+            const avgWait = state.seated.length > 0 
+                ? Math.round(state.seated.reduce((sum, p) => sum + p.actualWait, 0) / state.seated.length)
+                : 0;
+            document.getElementById('avgWait').textContent = avgWait + 'm';
+            
+            // Server workload
+            const workloadContainer = document.getElementById('serverWorkload');
+            if (state.servers.length === 0) {
+                workloadContainer.innerHTML = '<div class="no-data">No server data</div>';
+            } else {
+                const avgCount = state.servers.reduce((sum, s) => sum + s.count, 0) / state.servers.length;
+                const threshold = avgCount * 0.7;
+                
+                workloadContainer.innerHTML = state.servers.map(server => {
+                        const needsAttention = server.count < threshold && avgCount > 0;
+                        return `
+                            <div class="workload-card ${needsAttention ? 'attention' : ''}">
+                                <div>
+                                    <span class="workload-name">${server.name}</span>
+                                    ${needsAttention ? '<span class="attention-flag">CATCH UP</span>' : ''}
+                                </div>
+                                <div class="workload-count">${server.count}</div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+            
+            // Seated list
+            const seatedContainer = document.getElementById('seatedList');
+            if (state.seated.length === 0) {
+                seatedContainer.innerHTML = '<div class="no-data">No seated parties yet</div>';
+            } else {
+                seatedContainer.innerHTML = state.seated
+                    .sort((a, b) => b.seatedAt - a.seatedAt)
+                    .map(party => {
+                        const time = new Date(party.seatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                        return `
+                            <div class="history-card seated">
+                                <div class="history-header">
+                                    <div class="history-name">${party.name}</div>
+                                    <div class="history-time">${time}</div>
+                                </div>
+                                <div class="history-details">
+                                    ${party.size} people • ${party.preference} • Wait: ${party.actualWait}m<br>
+                                    Server: ${party.server}${party.table ? ` • Table ${party.table}` : ''}${party.phone ? ` • ${party.phone}` : ''}
+                                    ${party.callStatus ? `<br>Called: ${party.callStatus === 'coming' ? 'Coming In' : 'Unknown'}` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+            
+            // Removed list
+            const removedContainer = document.getElementById('removedList');
+            if (state.removed.length === 0) {
+                removedContainer.innerHTML = '<div class="no-data">No removed parties</div>';
+            } else {
+                removedContainer.innerHTML = state.removed
+                    .sort((a, b) => b.removedAt - a.removedAt)
+                    .map(party => {
+                        const time = new Date(party.removedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                        return `
+                            <div class="history-card removed">
+                                <div class="history-header">
+                                    <div class="history-name">${party.name}</div>
+                                    <div class="history-time">${time}</div>
+                                </div>
+                                <div class="history-details">
+                                    ${party.size} people • ${party.preference} • Wait: ${party.actualWait}m
+                                    ${party.phone ? `<br>${party.phone}` : ''}
+                                    ${party.callStatus ? `<br>Called: ${party.callStatus === 'coming' ? 'Coming In' : 'Unknown'}` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+        }
+        
+        // Confirm clear all
+        function confirmClearAll() {
+            document.getElementById('confirmModal').classList.add('show');
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            // Clear all unknown timers
+            Object.keys(unknownTimers).forEach(id => {
+                clearInterval(unknownTimers[id]);
+            });
+            unknownTimers = {};
+            
+            state = {
+                waitlist: [],
+                servers: [],
+                seated: [],
+                removed: []
+            };
+            saveState();
+            renderAll();
+            closeModal();
+            document.getElementById('totalServedCount').textContent = '0';
+            showToast('All data cleared', 'error');
+        }
+        
+        // Render all
+        function renderAll() {
+            // Update estimated wait
+            document.getElementById('estimatedWait').textContent = calculateEstimatedWait() + ' min';
+            
+            renderWaitlist();
+            renderServers();
+            renderReview();
+        }
+        
+        // Initialize
+        loadState();
+    </script>
+</body>
+</html>
+
